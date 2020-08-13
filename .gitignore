@@ -1,0 +1,10 @@
+.*.swp
+.*.swo
+__pycache__
+tmp
+build
+.DS_Store
+
+frames
+tensorboard
+data
