@@ -70,7 +70,7 @@ class ImageUtil:
             mean_speeds.append(np.mean([speed1, speed2]))
             frames.append(flow)
 
-        np.savetxt("speeds.csv", mean_speeds)
+        np.savetxt("speeds.csv", mean_speeds, fmt='%f')
 
         if not use_mean:
             return (np.array(frames), np.array(speeds)[:-1])

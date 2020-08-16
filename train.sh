@@ -1,3 +1,3 @@
 rm -rf tensorboard
 
-./run.py
+./train.py
