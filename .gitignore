@@ -8,3 +8,12 @@ build
 frames
 tensorboard
 data
+
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+profile_default/
+ipython_config.py
+
+pred.txt
+

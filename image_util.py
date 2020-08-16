@@ -41,7 +41,7 @@ class ImageUtil:
             shutil.rmtree(self.output_dir)
         os.mkdir(self.output_dir)
 
-    def gen_data(self, vid_file, speed_file):
+    def gen_data(self, vid_file, speed_file, use_mean=True):
         speeds = self.load_speeds(speed_file)
         vid = self.load_vf_sk(vid_file)
 
@@ -72,7 +72,27 @@ class ImageUtil:
 
         np.savetxt("speeds.csv", mean_speeds)
 
+        if not use_mean:
+            return (np.array(frames), np.array(speeds)[:-1])
         return (np.array(frames), np.array(mean_speeds))
+
+    def get_frames(self, vid_file):
+        vid = self.load_vf_sk(vid_file)
+
+        frames = []
+
+        for i in tqdm(range(len(vid) - 1)):
+            idx1 = i
+            idx2 = i + 1
+
+            f1 = vid[idx1]
+            f2 = vid[idx2]
+
+            flow = self.proc.process_frames(f1, f2, self.DSIZE)
+
+            frames.append(flow)
+
+        return np.array(frames)
 
     def load_data(self):
         speeds = np.loadtxt("speeds.csv")
@@ -80,12 +100,14 @@ class ImageUtil:
 
         frame_paths = os.listdir(self.output_dir)
         for fn in tqdm(frame_paths):
-            frames.append(cv2.imread(self.output_dir + fn))
+            f = cv2.imread(self.output_dir + fn)
+            frames.append(f)
 
         return (np.array(frames), speeds)
 
     def play(self, frames):
         for f in frames:
+            f = cv2.cvtColor(f, cv2.COLOR_HSV2RGB)
             cv2.imshow('window', f)
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 break
@@ -93,8 +115,8 @@ class ImageUtil:
 if __name__ == "__main__":
     util = ImageUtil()
 
-    frames, speeds = util.gen_data("data/train.mp4", "data/train.txt")
-    #frames, speeds = util.load_data()
+    #frames, speeds = util.gen_data("data/train.mp4", "data/train.txt")
+    frames, speeds = util.load_data()
 
     #frames = util.load_vf_sk("data/train.mp4")
     #frames = [util.proc.crop_resize(f, (500, 500)) for f in frames]

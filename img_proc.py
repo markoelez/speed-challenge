@@ -26,8 +26,8 @@ class ImageProc:
         return np.array(hsv)
 
     def crop_resize(self, frame, size):
-        #fc = frame[23 : 375, :]
-        fc = frame[200:400]
+        fc = frame[25:375, :]
+        #fc = frame[200:400]
 
         f = cv2.resize(fc, size, interpolation=cv2.INTER_AREA)
 
